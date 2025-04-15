@@ -123,7 +123,8 @@ void AFPSMovementCharacter::Jump()
 	if (JumpCount < MaxJumpCount)
 	{
 		Super::Jump();
-		JumpCount++;
+        JumpCount++;
+        UE_LOG(LogTemplateCharacter, Log, TEXT("JumpCount: %d"), JumpCount);
 	}
 }
 
@@ -155,7 +156,11 @@ void AFPSMovementCharacter::StartSliding()
 
 	GetCharacterMovement()->MaxWalkSpeed = 800.f;
 	GetCharacterMovement()->BrakingFrictionFactor = 0.f;
+	
+	GetCapsuleComponent()->SetCapsuleHalfHeight(48.0f);
+	GetCapsuleComponent()->SetCapsuleRadius(30.0f);
 }
+
 
 void AFPSMovementCharacter::StopSliding()
 {
@@ -163,4 +168,7 @@ void AFPSMovementCharacter::StopSliding()
 
 	GetCharacterMovement()->MaxWalkSpeed = 1200.f;
 	GetCharacterMovement()->BrakingFrictionFactor = 2.f;
+	
+	GetCapsuleComponent()->SetCapsuleHalfHeight(96.0f);
+	GetCapsuleComponent()->SetCapsuleRadius(55.0f);
 }
