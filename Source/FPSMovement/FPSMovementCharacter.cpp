@@ -20,7 +20,7 @@ DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 AFPSMovementCharacter::AFPSMovementCharacter()
 {
-
+	
 	DefaultMappingContext = nullptr;
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
@@ -67,7 +67,7 @@ void AFPSMovementCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 	{
 		// Jumping
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AFPSMovementCharacter::Jump);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &AFPSMovementCharacter::Jump);
+		
 
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AFPSMovementCharacter::Move);
@@ -122,10 +122,38 @@ void AFPSMovementCharacter::Jump()
 	UE_LOG(LogTemplateCharacter, Log, TEXT("jump called"));
 	if (JumpCount < MaxJumpCount)
 	{
-		Super::Jump();
-        JumpCount++;
-        UE_LOG(LogTemplateCharacter, Log, TEXT("JumpCount: %d"), JumpCount);
+		if (JumpCount == 0 || GetCharacterMovement()->IsFalling())
+		{
+			ACharacter::LaunchCharacter(FVector(0.f, 0.f, 600.f), false, true);
+			JumpCount++;
+			UE_LOG(LogTemplateCharacter, Log, TEXT("JumpCount: %d"), JumpCount);
+			
+		}
 	}
+}
+
+void AFPSMovementCharacter::Grapple()
+{
+	if (IsGrappling)
+	{
+		return;
+	}
+
+	FHitResult Hit;
+	FVector Start = GetFirstPersonCameraComponent()->GetComponentLocation();
+	FVector End = Start + GetFirstPersonCameraComponent()->GetForwardVector() * 1000.f;
+
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this);
+
+	if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, Params))
+	{
+		GrappleTarget = Hit.Location
+	}
+}
+
+void AFPSMovementCharacter::GrappleRelease()
+{
 }
 
 void AFPSMovementCharacter::Landed(const FHitResult& Hit)

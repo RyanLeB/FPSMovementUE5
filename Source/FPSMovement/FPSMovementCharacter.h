@@ -47,12 +47,15 @@ class AFPSMovementCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
+
+	/** Sprint Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* SprintAction;
 
 	void StartSprinting();
 	void StopSprinting();
 
+	/** Slide Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* SlideAction;
 	
@@ -76,6 +79,9 @@ protected:
 
 	virtual void Jump() override;
 
+	void Grapple();
+	void GrappleRelease();
+
 protected:
 	// APawn interface
 	virtual void NotifyControllerChanged() override;
@@ -88,5 +94,9 @@ public:
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
+private:
+	FVector GrappleTarget;
+	bool IsGrappling;
+	
 };
 
